@@ -1,0 +1,15 @@
+{
+	"name": "adf-satvikazurefirstproject",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "27c9cc48-da6a-4f68-8bb7-754ec3859b4d",
+		"tenantId": "52031ca4-cc1a-43c3-9a43-b6ca0af8de92"
+	}
+}
