@@ -327,7 +327,8 @@
 						"activity": "table_loop",
 						"dependencyConditions": [
 							"Failed",
-							"Skipped"
+							"Skipped",
+							"Succeeded"
 						]
 					}
 				],
