@@ -320,14 +320,94 @@
 				}
 			},
 			{
-				"name": "health_alert",
+				"name": "health_alert_success",
 				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "success_status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "failure_status",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-16.northcentralus.logic.azure.com:443/workflows/26f1c90b685e4846a4f1bac7dffd947c/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=qBMSGiMLNHjjU1uzGrLzX-V1wZrbw2yFAjzi3T60ku8",
+					"body": {
+						"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runID\" : \"@{pipeline().RunId}\",\n    \"status\" : \"@{variables('run_status')}\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "success_status",
+				"type": "SetVariable",
 				"dependsOn": [
 					{
 						"activity": "table_loop",
 						"dependencyConditions": [
-							"Failed",
-							"Skipped",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "run_status",
+					"value": "Success"
+				}
+			},
+			{
+				"name": "failure_status",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "table_loop",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "run_status",
+					"value": "Fail"
+				}
+			},
+			{
+				"name": "health_alert_failure",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "success_status",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					},
+					{
+						"activity": "failure_status",
+						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
@@ -344,7 +424,7 @@
 					"method": "POST",
 					"url": "https://prod-16.northcentralus.logic.azure.com:443/workflows/26f1c90b685e4846a4f1bac7dffd947c/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=qBMSGiMLNHjjU1uzGrLzX-V1wZrbw2yFAjzi3T60ku8",
 					"body": {
-						"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runID\" : \"@{pipeline().RunId}\"\n}",
+						"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runID\" : \"@{pipeline().RunId}\",\n    \"status\" : \"@{variables('run_status')}\"\n}",
 						"type": "Expression"
 					}
 				}
@@ -389,6 +469,9 @@
 		},
 		"variables": {
 			"current": {
+				"type": "String"
+			},
+			"run_status": {
 				"type": "String"
 			}
 		},
